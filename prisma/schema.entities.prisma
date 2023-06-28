@@ -1,0 +1,17 @@
+model Competitor {
+	@@map("competitor")
+
+	id          	Int      @id @default(autoincrement())
+	createdAt   	DateTime @default(now())
+	updatedAt   	DateTime @updatedAt()
+
+
+	username		String
+	password		String
+	telegram		String?
+	email		String?
+	group		String
+	sQuizValutation		String
+
+}
+
