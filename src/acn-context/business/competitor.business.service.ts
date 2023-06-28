@@ -28,6 +28,17 @@ export class CompetitorBusinessService {
 		return this.competitorEntityService.getCompetitor(id);
 	}
 
+	async getCompetitorByTelegramId(telegramId: string): Promise<CompetitorDto> {
+		let competitors: CompetitorDto[] = await this.searchCompetitors({
+			telegramIdEquals: telegramId
+		});
+
+		if(competitors.length == 0) throw "user_not_found";
+		if(competitors.length > 1) throw "multiple_user";
+
+		return competitors[0];
+	}
+
 	async deleteCompetitor(id: number) {
 		return this.competitorEntityService.deleteCompetitor(id);
 	}

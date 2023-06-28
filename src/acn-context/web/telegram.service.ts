@@ -3,11 +3,14 @@ import { ConfigService } from "@nestjs/config";
 
 import { Context, Telegraf } from "telegraf";
 import { message } from 'telegraf/filters';
+import { CompetitorBusinessService } from "../business/competitor.business.service";
+import { CompetitorDto } from "../dto/competitor.dto";
 
 @Injectable()
 export class TelegramService {
 	constructor(
 		private config: ConfigService,
+		private competitorBusinessService: CompetitorBusinessService,
 	) { this.startBot(); }
 
 	private bot: Telegraf;
@@ -63,16 +66,17 @@ export class TelegramService {
 
 
 	private async onMessage(ctx: any) {
-		let user: any;
+		let competitor: CompetitorDto;
 		let newUser: boolean = false;
 
 		try {
-			user = await this.getUser(ctx.chat.id);
+			let a = "a ctx.chat.id";
+			competitor = await this.competitorBusinessService.getCompetitorByTelegramId(a);
 		} catch (e) {
 			switch (e) {
 				case "user_not_found":
 					// Utente alla prima visita
-					user = await this.newUser(ctx);
+					competitor = await this.newCompetitor(ctx);
 					newUser = true;		
 					break;
 				default:
@@ -80,36 +84,38 @@ export class TelegramService {
 			}
 		}
 
+		console.log("asd", competitor);
+
 		// Controlla se utente non era attivo
-		if(!user.active) {
-			user.active = true;
+		if(!competitor.active) {
+			competitor.active = true;
 			//this.userService.createUpdateUser(user);
 		}
 
 		if(ctx.message.text == '/start') {
 			if(newUser) {
 				// Utente alla prima visita
-				this.bot.telegram.sendMessage(ctx.chat.id, `Benvenuto ${user.telegramFirstName}! E' un piacere averti tra i nostri utenti.`)	
+				this.bot.telegram.sendMessage(ctx.chat.id, `Benvenuto ${competitor.telegramFirstName}! E' un piacere averti tra i nostri utenti.`)	
 			} else {
-				this.bot.telegram.sendMessage(ctx.chat.id, `Bentornato ${user.telegramFirstName}.`)
+				this.bot.telegram.sendMessage(ctx.chat.id, `Bentornato ${competitor.telegramFirstName}.`)
 			}
 			
 			//this.defaultAction(user);
 			return;
 		}
 
-		this.bot.telegram.sendMessage(ctx.chat.id, `Hey ${user.telegramFirstName}, non riesco ad interpretare il tuo comando.`);
+		this.bot.telegram.sendMessage(ctx.chat.id, `Hey ${competitor.telegramFirstName}, non riesco ad interpretare il tuo comando.`);
 		//this.defaultAction(user);
 	}
 
-	private async newUser(ctx: any): Promise<any> {
-		let user: any = {
-			active: false,
+	private async newCompetitor(ctx: any): Promise<any> {
+		let competitor: CompetitorDto = {
+			active: true,
 			telegramId: ctx.from.id,
 			telegramFirstName: ctx.from.first_name,
 			telegramLastName: ctx.from.last_name,
 		}
-		return user;
+		return competitor;
 		//return await this.userService.createUpdateUser(user);
 	}
 
