@@ -59,7 +59,7 @@ export class CompetitorDto {
 		required: false
 	})
 	@IsOptional()
-	@IsNumber()
+	@IsString()
 	sQuizValutation?: any;
 
 
