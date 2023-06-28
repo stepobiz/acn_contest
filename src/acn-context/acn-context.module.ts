@@ -4,6 +4,7 @@ import { PrismaService } from './repository/prisma.service';
 import { CompetitorBusinessService } from './business/competitor.business.service';
 import { CompetitorEntityService } from './entity/competitor.entity.service';
 import { CompetitorController } from './web/rest/competitor.controller';
+import { TelegramService } from './web/telegram.service';
 
 @Module({
 	providers: [
@@ -12,6 +13,8 @@ import { CompetitorController } from './web/rest/competitor.controller';
 		CompetitorBusinessService,
 		CompetitorEntityService,
 
+		TelegramService,
+		
 	],
 	controllers: [
 		CompetitorController,
