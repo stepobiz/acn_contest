@@ -7,7 +7,7 @@ model Competitor {
 
 
 	active		Boolean?
-	telegramId		String?
+	telegramId		Float?
 	telegramFirstName		String?
 	telegramLastName		String?
 	username		String?
