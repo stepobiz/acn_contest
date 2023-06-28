@@ -1,0 +1,11 @@
+---
+deployment:
+  tasks:
+    - id
+    - export DEPLOYPATH=/home/stepobiz/acn.stepo.biz/contest_dist
+    - /opt/cpanel/ea-nodejs16/bin/npm install
+    - /opt/cpanel/ea-nodejs16/bin/npm run build
+    - /opt/cpanel/ea-nodejs16/bin/npx prisma generate
+    - /bin/rsync -av --delete --exclude 'node_modules' dist/ $DEPLOYPATH
+    - /bin/rsync -av --delete node_modules $DEPLOYPATH
+    - /bin/mv $DEPLOYPATH/main.js $DEPLOYPATH/app.js
