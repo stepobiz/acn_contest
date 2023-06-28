@@ -63,12 +63,12 @@ export class CompetitorDto {
 	password?: string;
 
     @ApiProperty({
-		type: String,
+		type: Number,
 		required: false
 	})
 	@IsOptional()
-	@IsString()
-	idToken?: string;
+	@IsNumber()
+	idToken?: number;
 
     @ApiProperty({
 		type: String,

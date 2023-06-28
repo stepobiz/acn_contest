@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Competitor {
 	@@map("competitor")
 
@@ -21,7 +22,7 @@ model Competitor {
 	telegramLastName		String?
 	username		String?
 	password		String?
-	idToken		String?
+	idToken		Float?
 	accessToken		String?
 	refreshToken		String?
 	email		String?
