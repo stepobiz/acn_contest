@@ -23,12 +23,12 @@ export class CompetitorDto {
 	active?: boolean;
 
     @ApiProperty({
-		type: String,
+		type: Number,
 		required: false
 	})
 	@IsOptional()
-	@IsString()
-	telegramId?: string;
+	@IsNumber()
+	telegramId?: number;
 
     @ApiProperty({
 		type: String,
@@ -63,12 +63,12 @@ export class CompetitorDto {
 	password?: string;
 
     @ApiProperty({
-		type: Number,
+		type: String,
 		required: false
 	})
 	@IsOptional()
-	@IsNumber()
-	idToken?: number;
+	@IsString()
+	idToken?: string;
 
     @ApiProperty({
 		type: String,

@@ -7,12 +7,12 @@ model Competitor {
 
 
 	active		Boolean?
-	telegramId		String?
+	telegramId		Float?
 	telegramFirstName		String?
 	telegramLastName		String?
 	username		String?
 	password		String?
-	idToken		Float?
+	idToken		String?
 	accessToken		String?
 	refreshToken		String?
 	email		String?
