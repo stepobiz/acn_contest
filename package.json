@@ -8,8 +8,6 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-	"pre-deploy": "git pull && npm install && npx prisma generate && npm run build",
-    "deploy:cpanel": "rsync -av --delete --exclude 'node_modules' dist/ ../../contest_dist && rsync -av --delete node_modules ../../contest_dist && mv ../../contest_dist/main.js ../../contest_dist/app.js",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
