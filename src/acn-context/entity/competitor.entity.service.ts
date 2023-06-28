@@ -13,11 +13,17 @@ export class CompetitorEntityService {
 		let prismaRequestArgs: any = {};
 		// Fileds
 		prismaRequestArgs['data'] = {
+			active: competitorDto.active,
+			telegramId: competitorDto.telegramId,
+			telegramFirstName: competitorDto.telegramFirstName,
+			telegramLastName: competitorDto.telegramLastName,
 			username: competitorDto.username,
 			password: competitorDto.password,
-			telegram: competitorDto.telegram,
+			idToken: competitorDto.idToken,
+			accessToken: competitorDto.accessToken,
+			refreshToken: competitorDto.refreshToken,
 			email: competitorDto.email,
-			group: competitorDto.group,
+			contextGroup: competitorDto.contextGroup,
 			sQuizValutation: competitorDto.sQuizValutation,
 		};
 		// Relations
@@ -30,11 +36,17 @@ export class CompetitorEntityService {
 				id: competitorDto.id,
 			},
 			data: {
+				active: competitorDto.active,
+				telegramId: competitorDto.telegramId,
+				telegramFirstName: competitorDto.telegramFirstName,
+				telegramLastName: competitorDto.telegramLastName,
 				username: competitorDto.username,
 				password: competitorDto.password,
-				telegram: competitorDto.telegram,
+				idToken: competitorDto.idToken,
+				accessToken: competitorDto.accessToken,
+				refreshToken: competitorDto.refreshToken,
 				email: competitorDto.email,
-				group: competitorDto.group,
+				contextGroup: competitorDto.contextGroup,
 				sQuizValutation: competitorDto.sQuizValutation,
 			},
 		});
