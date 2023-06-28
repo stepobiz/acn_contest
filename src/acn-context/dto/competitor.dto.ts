@@ -15,6 +15,38 @@ export class CompetitorDto {
 
 
     @ApiProperty({
+		type: Boolean,
+		required: false
+	})
+	@IsOptional()
+	@IsBoolean()
+	active?: boolean;
+
+    @ApiProperty({
+		type: String,
+		required: false
+	})
+	@IsOptional()
+	@IsString()
+	telegramId?: string;
+
+    @ApiProperty({
+		type: String,
+		required: false
+	})
+	@IsOptional()
+	@IsString()
+	telegramFirstName?: string;
+
+    @ApiProperty({
+		type: String,
+		required: false
+	})
+	@IsOptional()
+	@IsString()
+	telegramLastName?: string;
+
+    @ApiProperty({
 		type: String,
 		required: false
 	})
@@ -36,7 +68,23 @@ export class CompetitorDto {
 	})
 	@IsOptional()
 	@IsString()
-	telegram?: string;
+	idToken?: string;
+
+    @ApiProperty({
+		type: String,
+		required: false
+	})
+	@IsOptional()
+	@IsString()
+	accessToken?: string;
+
+    @ApiProperty({
+		type: String,
+		required: false
+	})
+	@IsOptional()
+	@IsString()
+	refreshToken?: string;
 
     @ApiProperty({
 		type: String,
@@ -52,7 +100,7 @@ export class CompetitorDto {
 	})
 	@IsOptional()
 	@IsString()
-	group?: string;
+	contextGroup?: string;
 
     @ApiProperty({
 		type: Object,
