@@ -28,7 +28,7 @@ export class CompetitorBusinessService {
 		return this.competitorEntityService.getCompetitor(id);
 	}
 
-	async getCompetitorByTelegramId(telegramId: string): Promise<CompetitorDto> {
+	async getCompetitorByTelegramId(telegramId: number): Promise<CompetitorDto> {
 		let competitors: CompetitorDto[] = await this.searchCompetitors({
 			telegramIdEquals: telegramId
 		});
