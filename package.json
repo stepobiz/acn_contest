@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+	"pre-deploy": "git pull && npm install && npx prisma generate && npm run build",
 	"deploy:apache": "rsync -av --delete --exclude 'node_modules' dist/ /var/www/acn-contest && rsync -av --delete node_modules /var/www/acn-contest && mkdir /var/www/acn-contest/public",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
