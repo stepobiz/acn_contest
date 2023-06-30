@@ -26,7 +26,7 @@ model Competitor {
 	refreshToken		String?
 	email		String?
 	contextGroup		String?
-	sQuizValutation		String?
+	sQuizValutation		Decimal? @db.Decimal(3,2)
 
 }
 
