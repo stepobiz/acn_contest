@@ -1,5 +1,5 @@
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
-import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDateString, IsDecimal, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Decimal } from "@prisma/client/runtime";
 
 
@@ -103,12 +103,12 @@ export class CompetitorDto {
 	contextGroup?: string;
 
     @ApiProperty({
-		type: Object,
+		type: Decimal,
 		required: false
 	})
 	@IsOptional()
-	@IsString()
-	sQuizValutation?: any;
+	@IsDecimal()
+	sQuizValutation?: Decimal;
 
 
 }
