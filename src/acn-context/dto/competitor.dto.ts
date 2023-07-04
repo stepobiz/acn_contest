@@ -103,12 +103,12 @@ export class CompetitorDto {
 	contextGroup?: string;
 
     @ApiProperty({
-		type: Decimal,
+		type: Number,
 		required: false
 	})
 	@IsOptional()
-	@IsDecimal()
-	sQuizValutation?: Decimal;
+	@IsNumber()
+	sQuizValutation?: number;
 
 
 }

@@ -133,7 +133,7 @@ export class TelegramService {
 		try { competitor = await this.getCompetitor(ctx); }
 		catch (e) { return; }
 
-		let sQuizValutation = ctx.update.message.text;
+		let sQuizValutation: number = +ctx.update.message.text;
 		{
 			//Controlli
 		}
