@@ -103,12 +103,12 @@ export class CompetitorDto {
 	contextGroup?: string;
 
     @ApiProperty({
-		type: Object,
+		type: Number,
 		required: false
 	})
 	@IsOptional()
-	@IsObject()
-	sQuizValutation?: any;
+	@IsNumber()
+	sQuizValutation?: number;
 
 
 }

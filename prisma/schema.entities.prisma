@@ -17,7 +17,7 @@ model Competitor {
 	refreshToken		String?
 	email		String?
 	contextGroup		String?
-	sQuizValutation		String?
+	sQuizValutation		Float?
 
 }
 
