@@ -135,6 +135,7 @@ export class TelegramService {
 			if(textMessage.text.toUpperCase().includes("PORCO")) {
 				ctx.deleteMessage(ctx.message.message_id);
 			}
+			console.log(ctx.update.message.chat.id);
 		}
 	}
 

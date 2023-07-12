@@ -13,6 +13,7 @@ export class TelegramCommonService {
 		private config: ConfigService,
 	) {
 		this.groupId = JSON.parse(this.config.get('GROUP_ID'));
+		console.log("GROUP ID", this.groupId);
 	}
 
 	private groupId: number;
