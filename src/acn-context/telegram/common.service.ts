@@ -3,13 +3,19 @@ import { CompetitorBusinessService } from "../business/competitor.business.servi
 import { CompetitorDto } from "../dto/competitor.dto";
 import { Update } from "telegraf/typings/core/types/typegram";
 import { Context } from "telegraf";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class TelegramCommonService {
 
 	constructor(
 		private competitorBusinessService: CompetitorBusinessService,
-	) { }
+		private config: ConfigService,
+	) {
+		this.groupId = JSON.parse(this.config.get('GROUP_ID'));
+	}
+
+	private groupId: number;
 
 	private userContext = {};
 
@@ -30,6 +36,10 @@ export class TelegramCommonService {
 	}
 
 
+
+	messageToGroup(ctx: any, message: string) {
+		ctx.telegram.sendMessage(this.groupId, message);
+	}
 
 
 
@@ -80,6 +90,12 @@ export class TelegramCommonService {
 				text: "Inserimento autovalutazione test",
 				callback_data: 's_quiz_valutation'
 			}],
+			[
+				{
+				text: "Statistiche gruppo",
+				callback_data: 'group_stat'
+			},
+			],
 		];
 		await ctx.telegram.sendMessage(competitor.telegramId, message, {
 			reply_markup: {

@@ -1,34 +1,35 @@
 import { Injectable } from "@nestjs/common";
 import { TelegramCommonService } from "./common.service";
 import { CompetitorBusinessService } from "../business/competitor.business.service";
-import { CompetitorDto } from "../dto/competitor.dto";
 import { Context } from "telegraf";
 import { Message, Update } from "telegraf/typings/core/types/typegram";
+import { CompetitorDto } from "../dto/competitor.dto";
 
 @Injectable({})
-export class TelegramUserGroupService {
+export class TelegramStatsService {
 	constructor(
 		private telegramCommonService: TelegramCommonService,
 		private competitorBusinessService: CompetitorBusinessService,
 	) {}
 
-	async actionAddGroup1(ctx: Context<Update.CallbackQueryUpdate>) {
+
+	async groupStat1(ctx: Context<Update.CallbackQueryUpdate>) {
 		ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
 		let competitor: CompetitorDto;
 		try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
 		catch (e) { return; }
 
-		let message = "Inserisci il gruppo del concorso di cui fai parte:\n";
+		let message = "Inserisci il gruppo del concorso di vuoi sapere i partecipanti:\n";
 		let askMessage = await ctx.reply(message);
 
 		this.telegramCommonService.setUserContext(competitor.telegramId, {
-			contextName: "add_group",
+			contextName: "group_stat",
 			askMessage: askMessage
 		});
 	}
 
-	async actionAddGroup2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
+	async groupStat2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
 		ctx.deleteMessage(ctx.message.message_id); // non lo fa
 
 		let competitor: CompetitorDto;
@@ -48,16 +49,15 @@ export class TelegramUserGroupService {
 				await ctx.reply(message);
 				return;
 			}
-
-			competitor.contextGroup = contextGroup;
-			competitor = await this.competitorBusinessService.editCompetitor(competitor);
 		}
 
-		let message = `Gruppo ${contextGroup} salvato con successo.`;
+		let competitors: number = await this.competitorBusinessService.countCompetitors({
+			contextGroupContains: contextGroup
+		});
+
+		let message = `Nel gruppo sono presenti ${competitors} persone che hanno detto di far parte del gruppo di concorso ${contextGroup}.`;
 		ctx.reply(message);
 
 		this.telegramCommonService.removeUserContext(competitor.telegramId);
-
-		this.telegramCommonService.messageToGroup(ctx, `Nuovo utente nel gruppo ${contextGroup} registrato.`);
 	}
 }

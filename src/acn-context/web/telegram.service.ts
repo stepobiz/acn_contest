@@ -10,6 +10,7 @@ import { TelegramCommonService } from "../telegram/common.service";
 import { TelegramUserService } from "../telegram/user.service";
 import { TelegramUserGroupService } from "../telegram/user-group.service";
 import { TelegramSQuizValutationService } from "../telegram/s-quiz-valutation.service";
+import { TelegramStatsService } from "../telegram/stats.service";
 
 @Injectable()
 export class TelegramService {
@@ -19,6 +20,7 @@ export class TelegramService {
 		private telegramUserService: TelegramUserService,
 		private telegramUserGroupService: TelegramUserGroupService,
 		private telegramSQuizValutationService: TelegramSQuizValutationService,
+		private telegramStatsService: TelegramStatsService,
 
 	) { this.startBot(); }
 
@@ -46,6 +48,7 @@ export class TelegramService {
 		this.bot.action('me', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionMe(ctx));
 		this.bot.action('add_group', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserGroupService.actionAddGroup1(ctx));
 		this.bot.action('s_quiz_valutation', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramSQuizValutationService.actionSQuizValutation1(ctx));
+		this.bot.action('group_stat', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramStatsService.groupStat1(ctx));
 
 
 		this.bot.on(message('text'), (ctx: Context<Update.MessageUpdate>) => this.onMessage(ctx));
@@ -83,6 +86,7 @@ export class TelegramService {
 			if(isPrivateMessage) {
 				this.telegramCommonService.sendRegistrationMessage(ctx);
 			} else {
+				ctx.deleteMessage(ctx.update.message.message_id);
 				let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
 				ctx.reply(message);
 			}
@@ -103,11 +107,13 @@ export class TelegramService {
 
 		if(isPrivateMessage) {
 			if(isLoggedUser) {
+
 				let userContext = this.telegramCommonService.getUserContext(competitor.telegramId);
 				if(userContext !== undefined) {
 					switch (userContext.contextName) {
 						case "add_group": await this.telegramUserGroupService.actionAddGroup2(ctx, textMessage); break;
 						case "s_quiz_valutation": await this.telegramSQuizValutationService.actionSQuizValutation2(ctx, textMessage); break;
+						case "group_stat": await this.telegramStatsService.groupStat2(ctx, textMessage); break;
 						default: break;
 					}
 					await ctx.deleteMessage(userContext.askMessage.message_id);
@@ -119,12 +125,17 @@ export class TelegramService {
 				message += "non ho capito la tua richiesta, ecco cosa puoi fare:\n";
 		
 				await this.telegramCommonService.loggedUserAction(ctx, competitor, message);
-				return;
+			} else {
+				this.telegramCommonService.sendRegistrationMessage(ctx);
 			}
-			
-			this.telegramCommonService.sendRegistrationMessage(ctx);
-		}
+		} else {
+			// Qui i messaggi nel gruppo
 
+			// censuro 
+			if(textMessage.text.toUpperCase().includes("PORCO")) {
+				ctx.deleteMessage(ctx.message.message_id);
+			}
+		}
 	}
 
 
