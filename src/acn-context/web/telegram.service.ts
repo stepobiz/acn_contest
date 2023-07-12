@@ -25,6 +25,14 @@ export class TelegramService {
 	private bot: Telegraf;
 
 	private async startBot() {
+		const enableBot: boolean = JSON.parse(this.config.get('ENABLE_BOT'));
+		if(!enableBot) {
+			console.log("Bot non avviato");
+			return;
+		}
+
+		console.log("Avvio Bot");
+
 		this.bot = new Telegraf(this.config.get('BOT_TOKEN'));
 
 		this.bot.start((ctx: Context<Update.MessageUpdate>) => this.onStart(ctx));
@@ -43,6 +51,8 @@ export class TelegramService {
 		this.bot.on(message('text'), (ctx: Context<Update.MessageUpdate>) => this.onMessage(ctx));
 
 		this.bot.launch();
+
+		console.log("Bot Avviato");
 	}
 
 
