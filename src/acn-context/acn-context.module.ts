@@ -5,6 +5,10 @@ import { CompetitorBusinessService } from './business/competitor.business.servic
 import { CompetitorEntityService } from './entity/competitor.entity.service';
 import { CompetitorController } from './web/rest/competitor.controller';
 import { TelegramService } from './web/telegram.service';
+import { TelegramUserService } from './telegram/user.service';
+import { TelegramCommonService } from './telegram/common.service';
+import { TelegramUserGroupService } from './telegram/user-group.service';
+import { TelegramSQuizValutationService } from './telegram/s-quiz-valutation.service';
 
 @Module({
 	providers: [
@@ -14,7 +18,11 @@ import { TelegramService } from './web/telegram.service';
 		CompetitorEntityService,
 
 		TelegramService,
-		
+		TelegramCommonService,
+		TelegramUserService,
+		TelegramUserGroupService,
+		TelegramSQuizValutationService,
+
 	],
 	controllers: [
 		CompetitorController,

@@ -9,6 +9,17 @@ export class CompetitorBusinessService {
 	) {}
 
 	async createCompetitor(competitorDto: CompetitorDto) {
+		let competitor: CompetitorDto;
+		try {
+			competitor = await this.getCompetitorByTelegramId(competitorDto.telegramId);
+		} catch (e) {
+			switch (e) {
+				case "user_not_found": break;
+				default: console.log("Errore grave", e); throw e;
+			}
+		}
+		if(competitor !== undefined) throw "already_registred";
+
 		return this.competitorEntityService.insertCompetitor(competitorDto);
 	}
 
