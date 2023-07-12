@@ -37,8 +37,12 @@ export class TelegramCommonService {
 
 
 
-	messageToGroup(ctx: any, message: string) {
-		ctx.telegram.sendMessage(this.groupId, message);
+	async messageToGroup(ctx: any, message: string) {
+		try {
+			await ctx.telegram.sendMessage(this.groupId, message);
+		} catch (e) {
+			console.log("ERRORE", e);
+		}
 	}
 
 
