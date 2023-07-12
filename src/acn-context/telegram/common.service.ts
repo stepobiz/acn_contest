@@ -16,7 +16,7 @@ export class TelegramCommonService {
 		console.log("GROUP ID", this.groupId);
 	}
 
-	private groupId: number;
+	private groupId: string;
 
 	private userContext = {};
 
