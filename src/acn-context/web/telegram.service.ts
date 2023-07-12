@@ -80,11 +80,12 @@ export class TelegramService {
 			message += "Ecco cosa puoi fare:\n";
 			this.telegramCommonService.loggedUserAction(ctx, competitor, message);
 		} else {
-			if(!isPrivateMessage) {
-				let message = `Ciao ${ctx.update.message.from.first_name}, ti ho contattato in privato!`;
+			if(isPrivateMessage) {
+				this.telegramCommonService.sendRegistrationMessage(ctx);
+			} else {
+				let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
 				ctx.reply(message);
 			}
-			this.telegramCommonService.sendRegistrationMessage(ctx);
 		}
 	}
 
