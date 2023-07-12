@@ -35,9 +35,13 @@ export class TelegramSQuizValutationService {
 		try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
 		catch (e) { return; }
 
-		let sQuizValutation: number = +textMessage.text;
+		let sQuizValutation: number = +textMessage.text.replace(",", ".");
 		{
 			//Controlli
+			if(isNaN(sQuizValutation)) {
+				ctx.reply("Scrivimi un numero");
+				return;
+			}
 
 			competitor.sQuizValutation = sQuizValutation;
 			competitor = await this.competitorBusinessService.editCompetitor(competitor);
