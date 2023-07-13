@@ -28,12 +28,11 @@ export class TelegramUserService {
 				message += "\n";
 				message += "Benvenuto su questa piattaforma che ci aiuterà a condividere informazioni ed aggiornamenti in merito al concorso ACN 60 diplomati.\n";
 				message += "Ecco cosa puoi fare:\n";
-				this.telegramCommonService.loggedUserAction(ctx, competitor, message);
+				await this.telegramCommonService.loggedUserAction(ctx, competitor, message);
 			} catch (e) {
 				switch (e) {
 					case "already_registred": {
-						console.log("già registrato");
-						ctx.reply("già registrato");
+						await ctx.reply("già registrato");
 					} return;
 					default: console.log("Errore grave", e); throw e;
 				}

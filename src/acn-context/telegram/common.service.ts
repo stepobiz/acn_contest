@@ -58,7 +58,7 @@ export class TelegramCommonService {
 		return competitor;
 	}
 
-	sendRegistrationMessage(ctx: Context<Update.MessageUpdate>) {
+	async sendRegistrationMessage(ctx: Context<Update.MessageUpdate>) {
 		let message = `Ciao ${ctx.update.message.from.first_name},`;
 		message += "\nNon sei ancora un nostro utente, se vuoi puoi registrarti cliccando sul tasto in basso!\n"
 		message += "\nRegistrati solo se hai partecipato al concorso!\n";
@@ -67,7 +67,7 @@ export class TelegramCommonService {
 		message += "\nQuesta nota vale come informativa sulla privacy dei dati trattati dalla presente piattaforma.\n";
 		message += "\nRegistrandoti accetti queste condizioni ed eventuali suoi aggiornamenti.";
 
-		ctx.telegram.sendMessage(ctx.update.message.from.id, message, {
+		await ctx.telegram.sendMessage(ctx.update.message.from.id, message, {
 			reply_markup: {
 				inline_keyboard: [
 					[{

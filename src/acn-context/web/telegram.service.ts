@@ -79,16 +79,16 @@ export class TelegramService {
 			if (isLoggedUser) {
 				if (!isPrivateMessage) {
 					let message = `Ciao ${competitor.telegramFirstName}, ti ho inviato i comandi disponibili in privato!`;
-					ctx.reply(message);
+					//ctx.reply(message);
 				}
 
 				let message = `Ciao ${competitor.telegramFirstName},`;
 				message += "\n";
 				message += "Ecco cosa puoi fare:\n";
-				this.telegramCommonService.loggedUserAction(ctx, competitor, message);
+				await this.telegramCommonService.loggedUserAction(ctx, competitor, message);
 			} else {
 				if (isPrivateMessage) {
-					this.telegramCommonService.sendRegistrationMessage(ctx);
+					await this.telegramCommonService.sendRegistrationMessage(ctx);
 				} else {
 					await ctx.deleteMessage(ctx.update.message.message_id);
 					let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
