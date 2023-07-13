@@ -19,7 +19,7 @@ export class StatsService {
 		{
 			let nCompetitors = await this.competitorBusinessService.countCompetitors({});
 			stats.push({
-				name: "Membri gruppo",
+				name: "Membri bot",
 				value: nCompetitors
 			});
 			totalCompetitor = nCompetitors
@@ -101,7 +101,7 @@ export class StatsService {
 			ctx.fillStyle = "white";
 			ctx.textAlign = "center";
 			line = 30;
-			ctx.fillText('Statitiche gruppo', x / 2, line, x)
+			ctx.fillText('Statitiche bot', x / 2, line, x)
 
 			let interLine = 30;
 
