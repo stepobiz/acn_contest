@@ -10,6 +10,7 @@ import { TelegramCommonService } from './telegram/common.service';
 import { TelegramUserGroupService } from './telegram/user-group.service';
 import { TelegramSQuizValutationService } from './telegram/s-quiz-valutation.service';
 import { TelegramStatsService } from './telegram/stats.service';
+import { StatsService } from './action/stats.service';
 
 @Module({
 	providers: [
@@ -17,6 +18,8 @@ import { TelegramStatsService } from './telegram/stats.service';
 
 		CompetitorBusinessService,
 		CompetitorEntityService,
+
+		StatsService,
 
 		TelegramService,
 		TelegramCommonService,

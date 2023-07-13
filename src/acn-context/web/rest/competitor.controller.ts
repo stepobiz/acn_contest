@@ -2,67 +2,73 @@ import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, 
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CompetitorBusinessService } from "../../business/competitor.business.service";
 import { CompetitorDto } from "../../dto/competitor.dto";
+import { StatsService } from "src/acn-context/action/stats.service";
 
 @ApiTags('competitor')
 @Controller('acn/context')
 export class CompetitorController {
-    constructor(
-        private competitorBusinessService: CompetitorBusinessService,
+	constructor(
+		private competitorBusinessService: CompetitorBusinessService,
+		private statsService: StatsService,
+	) { }
 
-    ) {}
+	@Post('competitors')
+	@ApiResponse({ status: 201, description: 'The record has been successfully created.' })
+	@ApiResponse({ status: 400, description: 'Bad request.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	createCompetitor(@Body() competitorDto: CompetitorDto) {
+		if (competitorDto.id !== undefined) {
+			throw new BadRequestException("not insert id in creation");
+		}
+		return this.competitorBusinessService.createCompetitor(competitorDto);
+	}
 
-    @Post('competitors')
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 400, description: 'Bad request.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    createCompetitor(@Body() competitorDto: CompetitorDto) {
-        if(competitorDto.id !== undefined) {
-            throw new BadRequestException("not insert id in creation");
-        }
-        return this.competitorBusinessService.createCompetitor(competitorDto);
-    }
+	@Put('competitors')
+	@ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+	@ApiResponse({ status: 400, description: 'Bad request.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	updateCompetitor(@Body() competitorDto: CompetitorDto) {
+		if (competitorDto.id === undefined) {
+			throw new BadRequestException("id is required in update");
+		}
+		return this.competitorBusinessService.editCompetitor(competitorDto);
+	}
 
-    @Put('competitors')
-    @ApiResponse({ status: 201, description: 'The record has been successfully updated.'})
-    @ApiResponse({ status: 400, description: 'Bad request.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    updateCompetitor(@Body() competitorDto: CompetitorDto) {
-        if(competitorDto.id === undefined) {
-            throw new BadRequestException("id is required in update");
-        }
-        return this.competitorBusinessService.editCompetitor(competitorDto);
-    }
+	@Get('competitors')
+	@ApiResponse({ status: 200, description: 'List of competitors.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	getAllCompetitors(@Query() queryParams): Promise<any> {
+		let filters: any = queryParams;
+		return this.competitorBusinessService.searchCompetitors(filters);
+	}
 
-    @Get('competitors')
-    @ApiResponse({ status: 200, description: 'List of competitors.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    getAllCompetitors(@Query() queryParams): Promise<any> {
-        let filters: any = queryParams;
-        return this.competitorBusinessService.searchCompetitors(filters);
-    }
+	@Get('competitors/count')
+	@ApiResponse({ status: 200, description: 'Count of competitors.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	getCompetitorsCount(@Query() queryParams): Promise<number> {
+		let filters: any = queryParams;
+		return this.competitorBusinessService.countCompetitors(filters);
+	}
 
-    @Get('competitors/count')
-    @ApiResponse({ status: 200, description: 'Count of competitors.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    getCompetitorsCount(@Query() queryParams): Promise<number> {
-        let filters: any = queryParams;
-        return this.competitorBusinessService.countCompetitors(filters);
-    }
+	@Get('competitors/:id')
+	@ApiResponse({ status: 200, description: 'Competitor detail.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	async getCompetitor(@Param('id') id: number): Promise<CompetitorDto> {
+		let competitorDto: CompetitorDto = await this.competitorBusinessService.getCompetitor(+id);
+		if (competitorDto === null) throw new NotFoundException();
+		return competitorDto;
+	}
 
-    @Get('competitors/:id')
-    @ApiResponse({ status: 200, description: 'Competitor detail.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    async getCompetitor(@Param('id') id: number): Promise<CompetitorDto> {
-        let competitorDto: CompetitorDto = await this.competitorBusinessService.getCompetitor(+id);
-        if(competitorDto === null) throw new NotFoundException();
-        return competitorDto;
-    }
+	@Delete('competitors/:id/delete')
+	@ApiResponse({ status: 200, description: 'Competitor deleted.' })
+	@ApiResponse({ status: 403, description: 'Forbidden.' })
+	deleteCompetitor(@Param('id') id: number) {
+		return this.competitorBusinessService.deleteCompetitor(+id);
+	}
 
-    @Delete('competitors/:id/delete')
-    @ApiResponse({ status: 200, description: 'Competitor deleted.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    deleteCompetitor(@Param('id') id: number) {
-        return this.competitorBusinessService.deleteCompetitor(+id);
-    }
 
+	@Get('test')
+	test(): Promise<String> {
+		return this.statsService.createStatImage();
+	}
 }
