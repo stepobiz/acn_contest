@@ -3,6 +3,7 @@ import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CompetitorBusinessService } from "../../business/competitor.business.service";
 import { CompetitorDto } from "../../dto/competitor.dto";
 import { StatsService } from "src/acn-context/action/stats.service";
+import { writeFileSync } from "fs";
 
 @ApiTags('competitor')
 @Controller('acn/context')
@@ -70,6 +71,10 @@ export class CompetitorController {
 	@Get('test')
 	async test(): Promise<String> {
 		let canvas = await this.statsService.createStatImage();
+
+		const buffer = canvas.toBuffer("image/png");
+		writeFileSync("assets/images/stats.jpg", buffer);
+
 		return '<img src="' + canvas.toDataURL() + '" />';
 	}
 }
