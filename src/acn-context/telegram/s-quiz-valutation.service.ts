@@ -10,22 +10,26 @@ export class TelegramSQuizValutationService {
 	constructor(
 		private telegramCommonService: TelegramCommonService,
 		private competitorBusinessService: CompetitorBusinessService,
-	) {}
-	
+	) { }
+
 	async actionSQuizValutation1(ctx: Context<Update.CallbackQueryUpdate>) {
-		ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+		try {
+			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
-		catch (e) { return; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
+			catch (e) { return; }
 
-		let message = "Inserisci l'autovalutazione del concorso:\n";
-		let askMessage = await ctx.reply(message);
+			let message = "Inserisci l'autovalutazione del concorso:\n";
+			let askMessage = await ctx.reply(message);
 
-		this.telegramCommonService.setUserContext(competitor.telegramId, {
-			contextName: "s_quiz_valutation",
-			askMessage: askMessage
-		});
+			this.telegramCommonService.setUserContext(competitor.telegramId, {
+				contextName: "s_quiz_valutation",
+				askMessage: askMessage
+			});
+		} catch (error) {
+			console.log("ERRORE actionSQuizValutation1", error);
+		}
 	}
 
 	async actionSQuizValutation2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
@@ -38,7 +42,7 @@ export class TelegramSQuizValutationService {
 		let sQuizValutation: number = +textMessage.text.replace(",", ".");
 		{
 			//Controlli
-			if(isNaN(sQuizValutation)) {
+			if (isNaN(sQuizValutation)) {
 				ctx.reply("Scrivimi un numero");
 				return;
 			}

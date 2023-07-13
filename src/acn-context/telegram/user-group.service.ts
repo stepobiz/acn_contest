@@ -10,22 +10,26 @@ export class TelegramUserGroupService {
 	constructor(
 		private telegramCommonService: TelegramCommonService,
 		private competitorBusinessService: CompetitorBusinessService,
-	) {}
+	) { }
 
 	async actionAddGroup1(ctx: Context<Update.CallbackQueryUpdate>) {
-		ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+		try {
+			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
-		catch (e) { return; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
+			catch (e) { return; }
 
-		let message = "Inserisci il gruppo del concorso di cui fai parte:\n";
-		let askMessage = await ctx.reply(message);
+			let message = "Inserisci il gruppo del concorso di cui fai parte:\n";
+			let askMessage = await ctx.reply(message);
 
-		this.telegramCommonService.setUserContext(competitor.telegramId, {
-			contextName: "add_group",
-			askMessage: askMessage
-		});
+			this.telegramCommonService.setUserContext(competitor.telegramId, {
+				contextName: "add_group",
+				askMessage: askMessage
+			});
+		} catch (error) {
+			console.log("ERRORE actionAddGroup1", error);
+		}
 	}
 
 	async actionAddGroup2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
@@ -37,13 +41,13 @@ export class TelegramUserGroupService {
 
 		let contextGroup = textMessage.text.toUpperCase();
 		{
-			if(!(contextGroup.startsWith("A") 
-			|| contextGroup.startsWith("B") 
-			|| contextGroup.startsWith("C") 
-			|| contextGroup.startsWith("D") 
-			|| contextGroup.startsWith("E") 
-			|| contextGroup.startsWith("F") 
-			|| contextGroup.startsWith("G") )) {
+			if (!(contextGroup.startsWith("A")
+				|| contextGroup.startsWith("B")
+				|| contextGroup.startsWith("C")
+				|| contextGroup.startsWith("D")
+				|| contextGroup.startsWith("E")
+				|| contextGroup.startsWith("F")
+				|| contextGroup.startsWith("G"))) {
 				let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
 				await ctx.reply(message);
 				return;
