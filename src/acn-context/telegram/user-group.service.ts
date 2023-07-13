@@ -4,12 +4,15 @@ import { CompetitorBusinessService } from "../business/competitor.business.servi
 import { CompetitorDto } from "../dto/competitor.dto";
 import { Context } from "telegraf";
 import { Message, Update } from "telegraf/typings/core/types/typegram";
+import { writeFileSync } from "fs";
+import { StatsService } from "../action/stats.service";
 
 @Injectable({})
 export class TelegramUserGroupService {
 	constructor(
 		private telegramCommonService: TelegramCommonService,
 		private competitorBusinessService: CompetitorBusinessService,
+		private statsService: StatsService,
 	) { }
 
 	async actionAddGroup1(ctx: Context<Update.CallbackQueryUpdate>) {
@@ -63,7 +66,11 @@ export class TelegramUserGroupService {
 
 			this.telegramCommonService.removeUserContext(competitor.telegramId);
 
-			this.telegramCommonService.messageToGroup(ctx, `Nuovo utente nel gruppo ${contextGroup} registrato.`);
+			await this.telegramCommonService.messageToGroup(ctx, `Nuovo utente nel gruppo ${contextGroup} registrato.`);
+
+			let canvas = await this.statsService.createStatImage();
+			const buffer = canvas.toBuffer("image/png");
+			writeFileSync("assets/images/stats.jpg", buffer);
 		} catch (error) {
 			console.log("ERRORE actionAddGroup2", error);
 		}

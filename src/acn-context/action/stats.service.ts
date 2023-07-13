@@ -118,28 +118,8 @@ export class StatsService {
 				ctx.fillStyle = "#ff0000";
 				ctx.fillText(stat.value, x - 40, line)
 			}
-
-
 		}
 
-
-		//ctx.rotate(0)
-
-		// Draw line under text
-		/*
-		var text = ctx.measureText('Awesome!')
-		ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-		ctx.beginPath()
-		ctx.lineTo(50, 102)
-		ctx.lineTo(50 + text.width, 102)
-		ctx.stroke()
-		*/
-
-		// Draw cat with lime helmet
-
-
-
-
-		return '<img src="' + canvas.toDataURL() + '" />';
+		return canvas;
 	}
 }

@@ -68,7 +68,8 @@ export class CompetitorController {
 
 
 	@Get('test')
-	test(): Promise<String> {
-		return this.statsService.createStatImage();
+	async test(): Promise<String> {
+		let canvas = await this.statsService.createStatImage();
+		return '<img src="' + canvas.toDataURL() + '" />';
 	}
 }

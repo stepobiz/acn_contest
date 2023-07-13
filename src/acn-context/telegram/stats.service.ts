@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { TelegramCommonService } from "./common.service";
 import { CompetitorBusinessService } from "../business/competitor.business.service";
 import { Context } from "telegraf";
-import { Message, Update } from "telegraf/typings/core/types/typegram";
+import { InputFile, Message, Update } from "telegraf/typings/core/types/typegram";
 import { CompetitorDto } from "../dto/competitor.dto";
+import { readFile } from "fs/promises";
 
 @Injectable({})
 export class TelegramStatsService {
@@ -16,6 +17,11 @@ export class TelegramStatsService {
 	async groupStat1(ctx: Context<Update.CallbackQueryUpdate>) {
 		try {
 			await ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+			await ctx.sendPhoto({
+				source: "assets/images/stats.jpg"
+			});
+
+			return;
 
 			let competitor: CompetitorDto;
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
