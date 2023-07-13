@@ -79,7 +79,7 @@ export class TelegramService {
 			if (isLoggedUser) {
 				if (!isPrivateMessage) {
 					let message = `Ciao ${competitor.telegramFirstName}, ti ho inviato i comandi disponibili in privato!`;
-					//ctx.reply(message);
+					await ctx.reply(message);
 				}
 
 				let message = `Ciao ${competitor.telegramFirstName},`;
@@ -96,7 +96,7 @@ export class TelegramService {
 				}
 			}
 		} catch (error) {
-			console.log("ERRORE tart", error);
+			console.log("ERRORE Start", error);
 		}
 	}
 
