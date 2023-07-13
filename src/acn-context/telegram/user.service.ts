@@ -14,7 +14,7 @@ export class TelegramUserService {
 
 	async actionRegister(ctx: Context<Update.CallbackQueryUpdate>) {
 		try {
-			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+			await ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
 			let competitor: CompetitorDto = {
 				active: true,

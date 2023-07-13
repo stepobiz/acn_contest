@@ -15,7 +15,7 @@ export class TelegramStatsService {
 
 	async groupStat1(ctx: Context<Update.CallbackQueryUpdate>) {
 		try {
-			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+			await ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
 			let competitor: CompetitorDto;
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
@@ -34,34 +34,38 @@ export class TelegramStatsService {
 	}
 
 	async groupStat2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
-		ctx.deleteMessage(ctx.message.message_id); // non lo fa
+		try {
+			await ctx.deleteMessage(ctx.message.message_id); // non lo fa
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
-		catch (e) { return; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
+			catch (e) { return; }
 
-		let contextGroup = textMessage.text.toUpperCase();
-		{
-			if (!(contextGroup.startsWith("A")
-				|| contextGroup.startsWith("B")
-				|| contextGroup.startsWith("C")
-				|| contextGroup.startsWith("D")
-				|| contextGroup.startsWith("E")
-				|| contextGroup.startsWith("F")
-				|| contextGroup.startsWith("G"))) {
-				let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
-				await ctx.reply(message);
-				return;
+			let contextGroup = textMessage.text.toUpperCase();
+			{
+				if (!(contextGroup.startsWith("A")
+					|| contextGroup.startsWith("B")
+					|| contextGroup.startsWith("C")
+					|| contextGroup.startsWith("D")
+					|| contextGroup.startsWith("E")
+					|| contextGroup.startsWith("F")
+					|| contextGroup.startsWith("G"))) {
+					let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
+					await ctx.reply(message);
+					return;
+				}
 			}
+
+			let competitors: number = await this.competitorBusinessService.countCompetitors({
+				contextGroupContains: contextGroup
+			});
+
+			let message = `Nel gruppo sono presenti ${competitors} persone che hanno detto di far parte del gruppo di concorso ${contextGroup}.`;
+			ctx.reply(message);
+
+			this.telegramCommonService.removeUserContext(competitor.telegramId);
+		} catch (error) {
+			console.log("ERRORE groupStat2", error);
 		}
-
-		let competitors: number = await this.competitorBusinessService.countCompetitors({
-			contextGroupContains: contextGroup
-		});
-
-		let message = `Nel gruppo sono presenti ${competitors} persone che hanno detto di far parte del gruppo di concorso ${contextGroup}.`;
-		ctx.reply(message);
-
-		this.telegramCommonService.removeUserContext(competitor.telegramId);
 	}
 }

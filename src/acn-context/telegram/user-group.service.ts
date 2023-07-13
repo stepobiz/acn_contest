@@ -14,7 +14,7 @@ export class TelegramUserGroupService {
 
 	async actionAddGroup1(ctx: Context<Update.CallbackQueryUpdate>) {
 		try {
-			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+			await ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
 			let competitor: CompetitorDto;
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
@@ -33,35 +33,39 @@ export class TelegramUserGroupService {
 	}
 
 	async actionAddGroup2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
-		ctx.deleteMessage(ctx.message.message_id); // non lo fa
+		try {
+			await ctx.deleteMessage(ctx.message.message_id); // non lo fa
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
-		catch (e) { return; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
+			catch (e) { return; }
 
-		let contextGroup = textMessage.text.toUpperCase();
-		{
-			if (!(contextGroup.startsWith("A")
-				|| contextGroup.startsWith("B")
-				|| contextGroup.startsWith("C")
-				|| contextGroup.startsWith("D")
-				|| contextGroup.startsWith("E")
-				|| contextGroup.startsWith("F")
-				|| contextGroup.startsWith("G"))) {
-				let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
-				await ctx.reply(message);
-				return;
+			let contextGroup = textMessage.text.toUpperCase();
+			{
+				if (!(contextGroup.startsWith("A")
+					|| contextGroup.startsWith("B")
+					|| contextGroup.startsWith("C")
+					|| contextGroup.startsWith("D")
+					|| contextGroup.startsWith("E")
+					|| contextGroup.startsWith("F")
+					|| contextGroup.startsWith("G"))) {
+					let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
+					await ctx.reply(message);
+					return;
+				}
+
+				competitor.contextGroup = contextGroup;
+				competitor = await this.competitorBusinessService.editCompetitor(competitor);
 			}
 
-			competitor.contextGroup = contextGroup;
-			competitor = await this.competitorBusinessService.editCompetitor(competitor);
+			let message = `Gruppo ${contextGroup} salvato con successo.`;
+			ctx.reply(message);
+
+			this.telegramCommonService.removeUserContext(competitor.telegramId);
+
+			this.telegramCommonService.messageToGroup(ctx, `Nuovo utente nel gruppo ${contextGroup} registrato.`);
+		} catch (error) {
+			console.log("ERRORE actionAddGroup2", error);
 		}
-
-		let message = `Gruppo ${contextGroup} salvato con successo.`;
-		ctx.reply(message);
-
-		this.telegramCommonService.removeUserContext(competitor.telegramId);
-
-		this.telegramCommonService.messageToGroup(ctx, `Nuovo utente nel gruppo ${contextGroup} registrato.`);
 	}
 }

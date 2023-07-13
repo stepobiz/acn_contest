@@ -90,9 +90,9 @@ export class TelegramService {
 				if (isPrivateMessage) {
 					this.telegramCommonService.sendRegistrationMessage(ctx);
 				} else {
-					ctx.deleteMessage(ctx.update.message.message_id);
+					await ctx.deleteMessage(ctx.update.message.message_id);
 					let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
-					ctx.reply(message);
+					await ctx.reply(message);
 				}
 			}
 		} catch (error) {
@@ -141,10 +141,8 @@ export class TelegramService {
 
 				// censuro 
 				if (textMessage.text.toUpperCase().includes("PORCO")) {
-					ctx.deleteMessage(ctx.message.message_id);
+					await ctx.deleteMessage(ctx.message.message_id);
 				}
-
-				console.log(ctx.update.message.chat.id);
 			}
 		} catch (error) {
 			console.log("ERRORE MESSAGE", error);

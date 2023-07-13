@@ -14,7 +14,7 @@ export class TelegramSQuizValutationService {
 
 	async actionSQuizValutation1(ctx: Context<Update.CallbackQueryUpdate>) {
 		try {
-			ctx.deleteMessage(ctx.callbackQuery.message.message_id);
+			await ctx.deleteMessage(ctx.callbackQuery.message.message_id);
 
 			let competitor: CompetitorDto;
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.callbackQuery.from.id); }
@@ -33,28 +33,32 @@ export class TelegramSQuizValutationService {
 	}
 
 	async actionSQuizValutation2(ctx: Context<Update.MessageUpdate>, textMessage: Message.TextMessage) {
-		ctx.deleteMessage(ctx.message.message_id); // non lo fa
+		try {
+			await ctx.deleteMessage(ctx.message.message_id); // non lo fa
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
-		catch (e) { return; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
+			catch (e) { return; }
 
-		let sQuizValutation: number = +textMessage.text.replace(",", ".");
-		{
-			//Controlli
-			if (isNaN(sQuizValutation)) {
-				ctx.reply("Scrivimi un numero");
-				return;
+			let sQuizValutation: number = +textMessage.text.replace(",", ".");
+			{
+				//Controlli
+				if (isNaN(sQuizValutation)) {
+					ctx.reply("Scrivimi un numero");
+					return;
+				}
+
+				competitor.sQuizValutation = sQuizValutation;
+				competitor = await this.competitorBusinessService.editCompetitor(competitor);
 			}
 
-			competitor.sQuizValutation = sQuizValutation;
-			competitor = await this.competitorBusinessService.editCompetitor(competitor);
+			let message = `Autovalutazione: ${sQuizValutation} salvato con successo.`;
+			ctx.reply(message);
+
+			this.telegramCommonService.removeUserContext(competitor.telegramId);
+		} catch (error) {
+			console.log("ERRORE actionSQuizValutation2", error);
 		}
-
-		let message = `Autovalutazione: ${sQuizValutation} salvato con successo.`;
-		ctx.reply(message);
-
-		this.telegramCommonService.removeUserContext(competitor.telegramId);
 	}
 
 
