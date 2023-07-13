@@ -73,6 +73,7 @@ export class TelegramService {
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.update.message.from.id); }
 			catch (e) { isLoggedUser = false; }
 
+			await ctx.deleteMessage(ctx.update.message.message_id);
 			if (isLoggedUser) {
 				if (!isPrivateMessage) {
 					let message = `Ciao ${competitor.telegramFirstName}, ti ho inviato i comandi disponibili in privato!`;
@@ -87,7 +88,6 @@ export class TelegramService {
 				if (isPrivateMessage) {
 					await this.telegramCommonService.sendRegistrationMessage(ctx);
 				} else {
-					await ctx.deleteMessage(ctx.update.message.message_id);
 					let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
 					await ctx.reply(message);
 				}
