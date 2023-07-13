@@ -28,7 +28,7 @@ export class TelegramService {
 
 	private async startBot() {
 		const enableBot: boolean = JSON.parse(this.config.get('ENABLE_BOT'));
-		if(!enableBot) {
+		if (!enableBot) {
 			console.log("Bot non avviato");
 			return;
 		}
@@ -63,80 +63,88 @@ export class TelegramService {
 
 
 	protected async onStart(ctx: Context<Update.MessageUpdate>) {
-		let isPrivateMessage: boolean = true;
-		let isLoggedUser: boolean = true;
+		try {
+			let isPrivateMessage: boolean = true;
+			let isLoggedUser: boolean = true;
 
-		if(ctx.update.message.chat.id < 0) isPrivateMessage = false;
+			if (ctx.update.message.chat.id < 0) isPrivateMessage = false;
 
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.update.message.from.id); }
-		catch (e) { isLoggedUser = false; }
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.update.message.from.id); }
+			catch (e) { isLoggedUser = false; }
 
-		if(isLoggedUser) {
-			if(!isPrivateMessage) {
-				let message = `Ciao ${competitor.telegramFirstName}, ti ho inviato i comandi disponibili in privato!`;
-				ctx.reply(message);
-			}
-			
-			let message = `Ciao ${competitor.telegramFirstName},`;
-			message += "\n";
-			message += "Ecco cosa puoi fare:\n";
-			this.telegramCommonService.loggedUserAction(ctx, competitor, message);
-		} else {
-			if(isPrivateMessage) {
-				this.telegramCommonService.sendRegistrationMessage(ctx);
-			} else {
-				ctx.deleteMessage(ctx.update.message.message_id);
-				let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
-				ctx.reply(message);
-			}
-		}
-	}
-
-	private async onMessage(ctx: Context<Update.MessageUpdate>) {
-		let isPrivateMessage: boolean = true;
-		let isLoggedUser: boolean = true;
-
-		if(ctx.update.message.chat.id < 0) isPrivateMessage = false;
-
-		let competitor: CompetitorDto;
-		try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
-		catch (e) { isLoggedUser = false; }
-
-		let textMessage: Message.TextMessage = (ctx.update.message as Message.TextMessage)
-
-		if(isPrivateMessage) {
-			if(isLoggedUser) {
-
-				let userContext = this.telegramCommonService.getUserContext(competitor.telegramId);
-				if(userContext !== undefined) {
-					switch (userContext.contextName) {
-						case "add_group": await this.telegramUserGroupService.actionAddGroup2(ctx, textMessage); break;
-						case "s_quiz_valutation": await this.telegramSQuizValutationService.actionSQuizValutation2(ctx, textMessage); break;
-						case "group_stat": await this.telegramStatsService.groupStat2(ctx, textMessage); break;
-						default: break;
-					}
-					await ctx.deleteMessage(userContext.askMessage.message_id);
-					return;
+			if (isLoggedUser) {
+				if (!isPrivateMessage) {
+					let message = `Ciao ${competitor.telegramFirstName}, ti ho inviato i comandi disponibili in privato!`;
+					ctx.reply(message);
 				}
 
 				let message = `Ciao ${competitor.telegramFirstName},`;
 				message += "\n";
-				message += "non ho capito la tua richiesta, ecco cosa puoi fare:\n";
-		
-				await this.telegramCommonService.loggedUserAction(ctx, competitor, message);
+				message += "Ecco cosa puoi fare:\n";
+				this.telegramCommonService.loggedUserAction(ctx, competitor, message);
 			} else {
-				this.telegramCommonService.sendRegistrationMessage(ctx);
+				if (isPrivateMessage) {
+					this.telegramCommonService.sendRegistrationMessage(ctx);
+				} else {
+					ctx.deleteMessage(ctx.update.message.message_id);
+					let message = `Ciao ${ctx.update.message.from.first_name}, devi contattarmi in privato per abilitarmi a parlare con te @acn60_bot!`;
+					ctx.reply(message);
+				}
 			}
-		} else {
-			// Qui i messaggi nel gruppo
+		} catch (error) {
+			console.log("ERRORE tart", error);
+		}
+	}
 
-			// censuro 
-			if(textMessage.text.toUpperCase().includes("PORCO")) {
-				ctx.deleteMessage(ctx.message.message_id);
+	private async onMessage(ctx: Context<Update.MessageUpdate>) {
+		try {
+			let isPrivateMessage: boolean = true;
+			let isLoggedUser: boolean = true;
+
+			if (ctx.update.message.chat.id < 0) isPrivateMessage = false;
+
+			let competitor: CompetitorDto;
+			try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
+			catch (e) { isLoggedUser = false; }
+
+			let textMessage: Message.TextMessage = (ctx.update.message as Message.TextMessage)
+
+			if (isPrivateMessage) {
+				if (isLoggedUser) {
+
+					let userContext = this.telegramCommonService.getUserContext(competitor.telegramId);
+					if (userContext !== undefined) {
+						switch (userContext.contextName) {
+							case "add_group": await this.telegramUserGroupService.actionAddGroup2(ctx, textMessage); break;
+							case "s_quiz_valutation": await this.telegramSQuizValutationService.actionSQuizValutation2(ctx, textMessage); break;
+							case "group_stat": await this.telegramStatsService.groupStat2(ctx, textMessage); break;
+							default: break;
+						}
+						await ctx.deleteMessage(userContext.askMessage.message_id);
+						return;
+					}
+
+					let message = `Ciao ${competitor.telegramFirstName},`;
+					message += "\n";
+					message += "non ho capito la tua richiesta, ecco cosa puoi fare:\n";
+
+					await this.telegramCommonService.loggedUserAction(ctx, competitor, message);
+				} else {
+					this.telegramCommonService.sendRegistrationMessage(ctx);
+				}
+			} else {
+				// Qui i messaggi nel gruppo
+
+				// censuro 
+				if (textMessage.text.toUpperCase().includes("PORCO")) {
+					ctx.deleteMessage(ctx.message.message_id);
+				}
+
+				console.log(ctx.update.message.chat.id);
 			}
-			
-			console.log(ctx.update.message.chat.id);
+		} catch (error) {
+			console.log("ERRORE MESSAGE", error);
 		}
 	}
 
@@ -151,12 +159,12 @@ export class TelegramService {
 
 
 
-	
 
 
 
 
-	
+
+
 
 
 }
