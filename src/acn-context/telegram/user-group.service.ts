@@ -40,15 +40,15 @@ export class TelegramUserGroupService {
 			try { competitor = await this.telegramCommonService.getCompetitor(ctx.message.from.id); }
 			catch (e) { return; }
 
-			let contextGroup = textMessage.text.toUpperCase();
+			let contextGroup = textMessage.text.toUpperCase().replace(" ", "");
 			{
-				if (!(contextGroup.startsWith("A")
-					|| contextGroup.startsWith("B")
-					|| contextGroup.startsWith("C")
-					|| contextGroup.startsWith("D")
-					|| contextGroup.startsWith("E")
-					|| contextGroup.startsWith("F")
-					|| contextGroup.startsWith("G"))) {
+				if (!(contextGroup == "A"
+					|| contextGroup == "B"
+					|| contextGroup == "C"
+					|| contextGroup == "D"
+					|| contextGroup == "E"
+					|| contextGroup == "F"
+					|| contextGroup == "G")) {
 					let message = "Inserisci un'opzione valida (a,b,c,d,e,f,g):\n";
 					await ctx.reply(message);
 					return;
