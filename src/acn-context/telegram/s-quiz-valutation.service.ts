@@ -44,7 +44,7 @@ export class TelegramSQuizValutationService {
 			{
 				//Controlli
 				if (isNaN(sQuizValutation)) {
-					ctx.reply("Scrivimi un numero");
+					await ctx.reply("Scrivimi un numero");
 					return;
 				}
 
@@ -53,7 +53,7 @@ export class TelegramSQuizValutationService {
 			}
 
 			let message = `Autovalutazione: ${sQuizValutation} salvato con successo.`;
-			ctx.reply(message);
+			await ctx.reply(message);
 
 			this.telegramCommonService.removeUserContext(competitor.telegramId);
 		} catch (error) {

@@ -44,15 +44,11 @@ export class TelegramService {
 
 
 		// le azioni sono date da i bottoni
-		try {
-			this.bot.action('register', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionRegister(ctx));
-			this.bot.action('me', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionMe(ctx));
-			this.bot.action('add_group', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserGroupService.actionAddGroup1(ctx));
-			this.bot.action('s_quiz_valutation', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramSQuizValutationService.actionSQuizValutation1(ctx));
-			this.bot.action('group_stat', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramStatsService.groupStat1(ctx));
-		} catch (error) {
-			console.log("ERRORE action", error);
-		}
+		this.bot.action('register', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionRegister(ctx));
+		this.bot.action('me', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionMe(ctx));
+		this.bot.action('add_group', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserGroupService.actionAddGroup1(ctx));
+		this.bot.action('s_quiz_valutation', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramSQuizValutationService.actionSQuizValutation1(ctx));
+		this.bot.action('group_stat', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramStatsService.groupStat1(ctx));
 
 		this.bot.on(message('text'), (ctx: Context<Update.MessageUpdate>) => this.onMessage(ctx));
 
@@ -66,6 +62,7 @@ export class TelegramService {
 
 
 	protected async onStart(ctx: Context<Update.MessageUpdate>) {
+		console.log("Start from:", ctx.update.message.from.first_name, "- in chat:", ctx.update.message.chat.id);
 		try {
 			let isPrivateMessage: boolean = true;
 			let isLoggedUser: boolean = true;
@@ -101,6 +98,9 @@ export class TelegramService {
 	}
 
 	private async onMessage(ctx: Context<Update.MessageUpdate>) {
+		if (ctx.update.message.chat.id > 0)
+			console.log("Message from:", ctx.update.message.from.first_name, "|", (ctx.update.message as Message.TextMessage).text);
+
 		try {
 			let isPrivateMessage: boolean = true;
 			let isLoggedUser: boolean = true;

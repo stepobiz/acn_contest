@@ -59,7 +59,7 @@ export class TelegramUserGroupService {
 			}
 
 			let message = `Gruppo ${contextGroup} salvato con successo.`;
-			ctx.reply(message);
+			await ctx.reply(message);
 
 			this.telegramCommonService.removeUserContext(competitor.telegramId);
 

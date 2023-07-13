@@ -61,7 +61,7 @@ export class TelegramStatsService {
 			});
 
 			let message = `Nel gruppo sono presenti ${competitors} persone che hanno detto di far parte del gruppo di concorso ${contextGroup}.`;
-			ctx.reply(message);
+			await ctx.reply(message);
 
 			this.telegramCommonService.removeUserContext(competitor.telegramId);
 		} catch (error) {
