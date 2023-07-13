@@ -44,12 +44,15 @@ export class TelegramService {
 
 
 		// le azioni sono date da i bottoni
-		this.bot.action('register', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionRegister(ctx));
-		this.bot.action('me', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionMe(ctx));
-		this.bot.action('add_group', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserGroupService.actionAddGroup1(ctx));
-		this.bot.action('s_quiz_valutation', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramSQuizValutationService.actionSQuizValutation1(ctx));
-		this.bot.action('group_stat', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramStatsService.groupStat1(ctx));
-
+		try {
+			this.bot.action('register', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionRegister(ctx));
+			this.bot.action('me', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserService.actionMe(ctx));
+			this.bot.action('add_group', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramUserGroupService.actionAddGroup1(ctx));
+			this.bot.action('s_quiz_valutation', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramSQuizValutationService.actionSQuizValutation1(ctx));
+			this.bot.action('group_stat', (ctx: Context<Update.CallbackQueryUpdate>) => this.telegramStatsService.groupStat1(ctx));
+		} catch (error) {
+			console.log("ERRORE action", error);
+		}
 
 		this.bot.on(message('text'), (ctx: Context<Update.MessageUpdate>) => this.onMessage(ctx));
 
